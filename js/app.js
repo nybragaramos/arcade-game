@@ -5,8 +5,11 @@ class Enemy {
 
   // The image/sprite for our enemies, this uses
   // a helper we've provided to easily load images
-  constructor () {
-      this.sprite = 'images/enemy-bug.png';
+  constructor (x, y, speed) {
+    this.x = x;
+    this.y = y;
+    this.speed = speed;
+    this.sprite = 'images/enemy-bug.png';
   }
   // Update the enemy's position, required method for game
   // Parameter: dt, a time delta between ticks
@@ -14,6 +17,7 @@ class Enemy {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x = this.x + this.speed*dt;
   }
   // Draw the enemy on the screen, required method for game
   render() {
@@ -25,12 +29,31 @@ class Enemy {
 // This class requires an update(), render() and
 // a handleInput() method.
 
+class Player {
+  constructor (x, y, delta) {
+    this.x = x;
+    this.y = y;
+    this.delta = delta;
+    this.sprite = 'images/char-boy.png';
+  }
+
+  render() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+  }
+
+  handleInput(value){
+  }
+  
+  update() {
+  }
+}
+
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-
-
+let allEnemies = [];
+allEnemies.push (new Enemy(-50, 120, 20));
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -41,6 +64,5 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
     player.handleInput(allowedKeys[e.keyCode]);
 });
