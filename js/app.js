@@ -42,8 +42,38 @@ class Player {
   }
 
   handleInput(value){
+    switch(value){
+      case('up'):
+        if(this.y - this.delta > 45) {
+          this.y -= this.delta;
+        }else {
+          this.y = 45;
+        }
+        break;
+      case('down'):
+        if(this.y + this.delta < 450) {
+          this.y += this.delta;
+        }else {
+          this.y = 450;
+        }
+        break;
+      case('left'):
+        if(this.x - this.delta > 0) {
+          this.x -= this.delta;
+        }else {
+          this.x = 0;
+        }
+        break;
+      case('right'):
+        if(this.x + this.delta < 410) {
+          this.x += this.delta;
+        }else {
+          this.x = 410;
+        }
+        break;
+    }
   }
-  
+
   update() {
   }
 }
@@ -54,6 +84,7 @@ class Player {
 // Place the player object in a variable called player
 let allEnemies = [];
 allEnemies.push (new Enemy(-50, 120, 20));
+let player = new Player(210, 450, 20);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
