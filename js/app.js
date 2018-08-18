@@ -42,39 +42,40 @@ class Enemy extends Character{
 // a handleInput() method.
 
 class Player extends Character{
-  constructor (x, y, delta, sprite) {
+  constructor (x, y, dx, dy, sprite) {
     super(x, y, sprite);
-    this.delta = delta;
+    this.dx = dx;
+    this.dy = dy;
   }
 
   handleInput(value){
     switch(value){
       case('up'):
-        if(this.y - this.delta > 45) {
-          this.y -= this.delta;
+        if(this.y - this.dy > 50) {
+          this.y -= this.dy;
         }else {
-          this.y = 45;
+          this.y = 50;
         }
         break;
       case('down'):
-        if(this.y + this.delta < 450) {
-          this.y += this.delta;
+        if(this.y + this.dy < 465) {
+          this.y += this.dy
         }else {
-          this.y = 450;
+          this.y = 465;
         }
         break;
       case('left'):
-        if(this.x - this.delta > 0) {
-          this.x -= this.delta;
+        if(this.x - this.dx >20) {
+          this.x -= this.dx;
         }else {
-          this.x = 0;
+          this.x = 20;
         }
         break;
       case('right'):
-        if(this.x + this.delta < 430) {
-          this.x += this.delta;
+        if(this.x + this.dx < 420) {
+          this.x += this.dx;
         }else {
-          this.x = 430;
+          this.x = 420;
         }
         break;
     }
@@ -89,7 +90,7 @@ class Player extends Character{
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 let allEnemies = [];
-let player = new Player(220, 450, 20, 'images/char-boy.png');
+let player = new Player(220, 465, 100, 83, 'images/char-boy.png');
 allEnemies.push (new Enemy(-50, 140, 20, player, 'images/enemy-bug.png'));
 
 // This listens for key presses and sends the keys to your
