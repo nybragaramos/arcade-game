@@ -33,7 +33,15 @@ class Enemy extends Element{
     if(this.player.x + 70> this.x && this.player.x < this.x + 100 && this.player.y + 85 > this.y && this.player.y < this.y + 70){
       this.player.x = 220;
       this.player.y = 465;
-      this.player.score = 0;
+      if(this.player.score > 0 ){
+        this.player.score = 0;
+      }else if(this.player.lives > 0){
+        this.player.lives--;
+      }else {
+        alert("Game Over");
+        this.player.score = 0;
+        this.player.lives = 3;
+      }
     }
   }  
 }
@@ -48,6 +56,7 @@ class Player extends Element{
     this.dx = dx;
     this.dy = dy;
     this.score = 0;
+    this.lives = 3;
   }
 
   handleInput(value){
@@ -84,6 +93,7 @@ class Player extends Element{
   }
 
   render(){
+
     super.render();
 
     //draw score
@@ -91,6 +101,12 @@ class Player extends Element{
     ctx.font = "16px Arial";
     ctx.fillStyle = "#0095DD";
     ctx.fillText("Score: "+ this.score, 8, 20);
+    ctx.closePath();
+    //draw lives
+    ctx.beginPath();
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: " + this.lives, 440, 20);
     ctx.closePath();
   }
 }
@@ -108,7 +124,11 @@ class Bonus extends Element{
     if(this.status == 1) {
       if(this.player.x > this.x && this.player.x < this.x + 80 && this.player.y + 5> this.y && this.player.y < this.y + 80) {
         this.status = 0;
-        this.player.score += this.bonus;
+        if(this.bonus > 0){
+          this.player.score += this.bonus; 
+        }else {
+          this.player.lives ++;
+        }
       }
       if (new Date().getTime() - this.time > 5000){
         this.status = 0;
@@ -151,22 +171,32 @@ document.addEventListener('keyup', function(e) {
 });
 
 setInterval(addEnemies, 1300);
-setInterval(addBonus, 3000);
-allBonus.push(new Bonus(bonusSpawnLineX[1], bonusSpawnLineY[0], 'images/Heart.png', 15, player));
+setInterval(addSmallBonus, 3000);
+setInterval(addBigBonus, 7000);
 
 function addEnemies() {
   allEnemies.push(new Enemy(-100, enemySpawnLineY[Math.floor(Math.random()*3)], Math.random()*100+30, player, 'images/enemy-bug.png'));
 }
 
-function addBonus(){
-
+function addSmallBonus(){
   switch (Math.floor(Math.random()*3)){
     case(0):
-      allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/Star.png', 5, player));
+      allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-blue.png', 5, player));
       break;
     case(1):
-      allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/Key.png', 10, player));
+      allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-green.png', 10, player));
     case(2):
-      allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/Heart.png', 15, player));
+      allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-orange.png', 15, player));
   }  
+}
+
+function addBigBonus(){
+  const value = Math.random();
+  if(value>0.8) {
+    allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/star.png', 50, player));
+  }else if (value < 0.15){
+    allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/heart.png', 0, player));
+  }else {
+    allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/key.png', 25, player));
+  }
 }
