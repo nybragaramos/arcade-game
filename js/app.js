@@ -82,6 +82,17 @@ class Player extends Element{
         break;
     }
   }
+
+  render(){
+    super.render();
+
+    //draw score
+    ctx.beginPath();
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Score: "+ this.score, 8, 20);
+    ctx.closePath();
+  }
 }
 
 class Bonus extends Element{
@@ -95,7 +106,7 @@ class Bonus extends Element{
 
   update(){
     if(this.status == 1) {
-      if(this.player.x > this.x && this.player.x < this.x + 80 && this.player.y + 4> this.y && this.player.y < this.y + 80) {
+      if(this.player.x > this.x && this.player.x < this.x + 80 && this.player.y + 5> this.y && this.player.y < this.y + 80) {
         this.status = 0;
         this.player.score += this.bonus;
       }
@@ -108,9 +119,8 @@ class Bonus extends Element{
   render() {
     if(this.status == 1){
       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    }
+    }    
   }
-
 }
 
 // Now instantiate your objects.
@@ -125,7 +135,7 @@ const bonusSpawnLineY = [133, 215, 300];
 
 for(i = 0; i < 4; i++){
   // add the new object to the objects[] array
-  allEnemies.push(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*3.99)], Math.random()*100+30, player, 'images/enemy-bug.png'));
+  allEnemies.push(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
 }
 
 // This listens for key presses and sends the keys to your
@@ -142,7 +152,7 @@ document.addEventListener('keyup', function(e) {
 
 setInterval(addEnemies, 1300);
 setInterval(addBonus, 3000);
-
+allBonus.push(new Bonus(bonusSpawnLineX[1], bonusSpawnLineY[0], 'images/Heart.png', 15, player));
 
 function addEnemies() {
   allEnemies.push(new Enemy(-100, enemySpawnLineY[Math.floor(Math.random()*3)], Math.random()*100+30, player, 'images/enemy-bug.png'));
