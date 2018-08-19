@@ -31,17 +31,7 @@ class Enemy extends Element{
     //bug width = 100px height = 80px
     //player width = 80px height = 90
     if(this.player.x + 70> this.x && this.player.x < this.x + 100 && this.player.y + 85 > this.y && this.player.y < this.y + 70){
-      this.player.x = 220;
-      this.player.y = 465;
-      if(this.player.score > 0 ){
-        this.player.score = 0;
-      }else if(this.player.lives > 0){
-        this.player.lives--;
-      }else {
-        alert("Game Over");
-        this.player.score = 0;
-        this.player.lives = 3;
-      }
+      this.player.collided();
     }
   }  
 }
@@ -57,6 +47,7 @@ class Player extends Element{
     this.dy = dy;
     this.score = 0;
     this.lives = 3;
+    this.hasLost = false;
   }
 
   handleInput(value){
@@ -93,7 +84,6 @@ class Player extends Element{
   }
 
   render(){
-
     super.render();
 
     //draw score
@@ -108,6 +98,33 @@ class Player extends Element{
     ctx.fillStyle = "#0095DD";
     ctx.fillText("Lives: " + this.lives, 440, 20);
     ctx.closePath();
+  }
+
+  collided(){
+    player.x = 220;
+    player.y = 465;
+    if(player.score > 0 ){
+      player.score = 0;
+    }else if(player.lives > 0){
+      player.lives--;
+    }else {
+      player.hasLost = true;
+    }
+  }
+
+  isAVictory(){
+    if(player.y == 50){
+      return true;
+    }
+    return false;
+  }
+
+  update() {
+    player.x = 220;
+    player.y = 465;
+    player.score = 0;
+    player.lives = 3;
+    player.hasLost = false;
   }
 }
 
@@ -146,8 +163,8 @@ class Bonus extends Element{
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-let allEnemies = [];
-let allBonus = [];
+let allEnemies = new Set();
+let allBonus = new Set();
 let player = new Player(218, 465, 100, 84, 'images/char-boy.png');
 const enemySpawnLineY = [140, 220, 300];
 const bonusSpawnLineX = [10,110,213,313, 413];
@@ -155,7 +172,7 @@ const bonusSpawnLineY = [133, 215, 300];
 
 for(i = 0; i < 4; i++){
   // add the new object to the objects[] array
-  allEnemies.push(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
+  allEnemies.add(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
 }
 
 // This listens for key presses and sends the keys to your
@@ -167,36 +184,52 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
+
+    if($('#game-over').is(':visible') && e.keyCode == 13){
+      playAgain();
+    }
+
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-setInterval(addEnemies, 1300);
+setInterval(addEnemies, 1500);
 setInterval(addSmallBonus, 3000);
 setInterval(addBigBonus, 7000);
 
 function addEnemies() {
-  allEnemies.push(new Enemy(-100, enemySpawnLineY[Math.floor(Math.random()*3)], Math.random()*100+30, player, 'images/enemy-bug.png'));
+  allEnemies.add(new Enemy(-100, enemySpawnLineY[Math.floor(Math.random()*3)], Math.random()*100+30, player, 'images/enemy-bug.png'));
 }
 
 function addSmallBonus(){
   switch (Math.floor(Math.random()*3)){
     case(0):
-      allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-blue.png', 5, player));
+      allBonus.add(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-blue.png', 5, player));
       break;
     case(1):
-      allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-green.png', 10, player));
+      allBonus.add(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-green.png', 10, player));
     case(2):
-      allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-orange.png', 15, player));
+      allBonus.add(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-orange.png', 15, player));
   }  
 }
 
 function addBigBonus(){
   const value = Math.random();
   if(value>0.8) {
-    allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/star.png', 50, player));
+    allBonus.add(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/star.png', 50, player));
   }else if (value < 0.15){
-    allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/heart.png', 0, player));
+    allBonus.add(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/heart.png', 0, player));
   }else {
-    allBonus.push(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/key.png', 25, player));
+    allBonus.add(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/key.png', 25, player));
+  }
+}
+
+function playAgain() {
+  console.log('play again');
+  $('#winner').fadeOut();
+  $('#game-over').fadeOut();
+  player.update();
+  for(i = 0; i < 4; i++){
+  // add the new object to the objects[] array
+  allEnemies.add(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
   }
 }

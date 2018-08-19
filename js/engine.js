@@ -26,7 +26,23 @@ var Engine = (function(global) {
 
     canvas.width = 505;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+
+    var gameOver = doc.createElement("div");
+    gameOver.id = "game-over";
+    gameOver.innerHTML = '<h1 align="center">GAME OVER</h1><button onclick="playAgain()">PLAY AGAIN</button>';
+
+    var winner = doc.createElement("div");
+    winner.id = "winner";
+    winner.innerHTML = '<h1 align="center">YOU WON!</h1><button onclick="playAgain()">PLAY AGAIN</button>';
+
+    var myCanvas = doc.createElement("div");
+    myCanvas.id = "myCanvas";
+    myCanvas.appendChild(canvas);
+
+    doc.body.appendChild(gameOver);
+    doc.body.appendChild(winner);
+    doc.body.appendChild(myCanvas);
+    console.log(document.body); 
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -46,6 +62,14 @@ var Engine = (function(global) {
          */
         update(dt);
         render();
+        if(player.hasLost == true || player.isAVictory() == true){
+            $('myCanvas').attr("style", 'z-index: -1;');
+            allEnemies.clear();
+            allBonus.clear();
+            render();
+            $('#game-over').fadeIn();
+            //$('#winner').fadeIn();
+        }
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -92,9 +116,13 @@ var Engine = (function(global) {
     function updateEntities(dt) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
+            if(enemy.x > 500)
+                allEnemies.delete(enemy);
         });
         allBonus.forEach(function(bonus) {
             bonus.update();
+            if(bonus.status == 0)
+                allBonus.delete(bonus);
         });
     }
 
@@ -139,7 +167,6 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
         renderEntities();
     }
 
@@ -170,7 +197,11 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+        console.log('reset');
+    }
+
+    function win(){
+        console.log('win');
     }
 
     /* Go ahead and load all of the images we know we're going to need to
