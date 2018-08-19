@@ -59,6 +59,13 @@ class Player extends Element{
         }else {
           this.y = 50;
           this.hasWin = true;
+          /*Set Record on local Storage
+           */
+          if(localStorage.getItem('scoreRecord') == null){
+            localStorage.setItem('scoreRecord', this.score);
+          } else if(parseInt(localStorage.getItem('scoreRecord')) < this.score){
+            localStorage.setItem('scoreRecord', this.score);
+          }
         }
         break;
       case('down'):
@@ -102,6 +109,10 @@ class Player extends Element{
     ctx.closePath();
   }
 
+  /* Return the Player to original position after a colision
+   * If the player as scores the scores will become 0 if not lose one life
+   * If no more scores or lifes to lose the player lose the game
+   */
   collided(){
     this.x = 220;
     this.y = 465;
@@ -114,6 +125,8 @@ class Player extends Element{
     }
   }
 
+  /* Return the the original position
+   */
   update() {
     this.x = 220;
     this.y = 465;
@@ -140,9 +153,12 @@ class Bonus extends Element{
         if(this.bonus > 0){
           this.player.score += this.bonus;
         }else {
+          //the bonus == 0 its the heart that give a life
           this.player.lives ++;
         }
       }
+      /* Give the bonus a 5000ms life
+       */
       if (new Date().getTime() - this.time > 5000){
         this.status = 0;
       }
@@ -150,6 +166,9 @@ class Bonus extends Element{
   }
 
   render() {
+    /* if the bonus has been collected or if the lifetime has expired 
+     * it should not be rendered
+     */
     if(this.status == 1){
       ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }    
@@ -188,6 +207,8 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
+
+//set time to add new enemies and bonus
 let addEnemisInterval = setInterval(addEnemies, 1500);
 let addSmallBonusInterval = setInterval(addSmallBonus, 3000);
 let addBigBonusInterval = setInterval(addBigBonus, 7000);
