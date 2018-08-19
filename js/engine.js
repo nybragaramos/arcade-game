@@ -29,11 +29,11 @@ var Engine = (function(global) {
 
     var gameOver = doc.createElement("div");
     gameOver.id = "game-over";
-    gameOver.innerHTML = '<h1 align="center">GAME OVER</h1><button onclick="playAgain()">PLAY AGAIN</button>';
+    gameOver.innerHTML = '<h1>GAME OVER</h1><button onclick="playAgain()">PLAY AGAIN</button>';
 
     var winner = doc.createElement("div");
     winner.id = "winner";
-    winner.innerHTML = '<h1 align="center">YOU WON!</h1><button onclick="playAgain()">PLAY AGAIN</button>';
+    winner.innerHTML = `<img src="images/victory-stars.png" alt="3 stars"><h1>YOU WIN!</h1><h2>0</h2><button onclick="playAgain()">PLAY AGAIN</button>`;
 
     var myCanvas = doc.createElement("div");
     myCanvas.id = "myCanvas";
@@ -62,13 +62,23 @@ var Engine = (function(global) {
          */
         update(dt);
         render();
-        if(player.hasLost == true || player.isAVictory() == true){
+        if(player.hasLost === true || player.hasWin === true){
             $('myCanvas').attr("style", 'z-index: -1;');
+            clearInterval(addEnemisInterval);
+            clearInterval(addSmallBonusInterval);
+            clearInterval(addBigBonusInterval);
             allEnemies.clear();
             allBonus.clear();
             render();
-            $('#game-over').fadeIn();
-            //$('#winner').fadeIn();
+            if(player.hasLost === true){
+                $('#game-over').fadeIn();
+            }
+            if(player.hasWin === true){
+                if(!$('#game-over').is(':visible')){
+                    $('h2').text('Score: ' + player.score);
+                    $('#winner').fadeIn();
+                }
+            }
         }
 
         /* Set our lastTime variable which is used to determine the time delta
@@ -188,8 +198,6 @@ var Engine = (function(global) {
         });
 
         player.render();
-
-        
     }
 
     /* This function does nothing but it could have been a good place to
@@ -197,11 +205,6 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        console.log('reset');
-    }
-
-    function win(){
-        console.log('win');
     }
 
     /* Go ahead and load all of the images we know we're going to need to

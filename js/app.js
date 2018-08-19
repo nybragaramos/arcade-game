@@ -48,6 +48,7 @@ class Player extends Element{
     this.score = 0;
     this.lives = 3;
     this.hasLost = false;
+    this.hasWin = false;
   }
 
   handleInput(value){
@@ -57,6 +58,7 @@ class Player extends Element{
           this.y -= this.dy;
         }else {
           this.y = 50;
+          this.hasWin = true;
         }
         break;
       case('down'):
@@ -101,30 +103,24 @@ class Player extends Element{
   }
 
   collided(){
-    player.x = 220;
-    player.y = 465;
-    if(player.score > 0 ){
-      player.score = 0;
-    }else if(player.lives > 0){
-      player.lives--;
+    this.x = 220;
+    this.y = 465;
+    if(this.score > 0 ){
+      this.score = 0;
+    }else if(this.lives > 0){
+      this.lives--;
     }else {
-      player.hasLost = true;
+      this.hasLost = true;
     }
-  }
-
-  isAVictory(){
-    if(player.y == 50){
-      return true;
-    }
-    return false;
   }
 
   update() {
-    player.x = 220;
-    player.y = 465;
-    player.score = 0;
-    player.lives = 3;
-    player.hasLost = false;
+    this.x = 220;
+    this.y = 465;
+    this.score = 0;
+    this.lives = 3;
+    this.hasLost = false;
+    this.hasWin = false;
   }
 }
 
@@ -142,7 +138,7 @@ class Bonus extends Element{
       if(this.player.x > this.x && this.player.x < this.x + 80 && this.player.y + 5> this.y && this.player.y < this.y + 80) {
         this.status = 0;
         if(this.bonus > 0){
-          this.player.score += this.bonus; 
+          this.player.score += this.bonus;
         }else {
           this.player.lives ++;
         }
@@ -185,16 +181,16 @@ document.addEventListener('keyup', function(e) {
         40: 'down'
     };
 
-    if($('#game-over').is(':visible') && e.keyCode == 13){
+    if(($('#game-over').is(':visible') || $('#winner').is(':visible')) && e.keyCode == 13){
       playAgain();
     }
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-setInterval(addEnemies, 1500);
-setInterval(addSmallBonus, 3000);
-setInterval(addBigBonus, 7000);
+let addEnemisInterval = setInterval(addEnemies, 1500);
+let addSmallBonusInterval = setInterval(addSmallBonus, 3000);
+let addBigBonusInterval = setInterval(addBigBonus, 7000);
 
 function addEnemies() {
   allEnemies.add(new Enemy(-100, enemySpawnLineY[Math.floor(Math.random()*3)], Math.random()*100+30, player, 'images/enemy-bug.png'));
@@ -224,12 +220,17 @@ function addBigBonus(){
 }
 
 function playAgain() {
-  console.log('play again');
   $('#winner').fadeOut();
   $('#game-over').fadeOut();
+  
   player.update();
+  
   for(i = 0; i < 4; i++){
   // add the new object to the objects[] array
   allEnemies.add(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
   }
+
+  addEnemisInterval = setInterval(addEnemies, 1500);
+  addSmallBonusInterval = setInterval(addSmallBonus, 3000);
+  addBigBonusInterval = setInterval(addBigBonus, 7000);
 }

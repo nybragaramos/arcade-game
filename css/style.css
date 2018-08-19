@@ -3,18 +3,20 @@ body {
   font-family: 'Press Start 2P', cursive;
 }
 
-h1 {
-  margin-bottom: 50px;
-}
-
 button {
   font-size: 16pt;
   background: seashell;
 }
 
+img {
+  margin-top: 20px;
+  height: 100px;
+}
+
 #game-over,
 #winner,
 #myCanvas {
+  text-align: center;
   width: 100%;
   position:fixed;
   z-index: 1;
@@ -24,6 +26,7 @@ button {
 #game-over,
 #winner {
   margin-top: 55px;
+  padding-top: 50px;
   z-index: 2;
   display: none;
 }
