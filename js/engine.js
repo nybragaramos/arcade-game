@@ -33,7 +33,7 @@ var Engine = (function(global) {
 
     var winner = doc.createElement("div");
     winner.id = "winner";
-    winner.innerHTML = `<img src="images/victory-stars.png" alt="3 stars"><h1>YOU WIN!</h1><h2>0</h2><button onclick="playAgain()">PLAY AGAIN</button>`;
+    winner.innerHTML = `<img src="images/victory-stars.png" alt="3 stars"><h1>YOU WIN!</h1><h2 id="gameScore">0</h2><h2 id="scoreRecord">0</h2><button onclick="playAgain()">PLAY AGAIN</button>`;
 
     var myCanvas = doc.createElement("div");
     myCanvas.id = "myCanvas";
@@ -62,20 +62,34 @@ var Engine = (function(global) {
          */
         update(dt);
         render();
+
+        /*  
+         */
         if(player.hasLost === true || player.hasWin === true){
             $('myCanvas').attr("style", 'z-index: -1;');
+
+            //clear the timers that add new elements to the screen
             clearInterval(addEnemisInterval);
             clearInterval(addSmallBonusInterval);
             clearInterval(addBigBonusInterval);
+
+            //clear the enemies and bonus sets
             allEnemies.clear();
             allBonus.clear();
+
             render();
+
             if(player.hasLost === true){
                 $('#game-over').fadeIn();
             }
             if(player.hasWin === true){
+                //do not allow a win screen with the game over
                 if(!$('#game-over').is(':visible')){
-                    $('h2').text('Score: ' + player.score);
+                    $('#gameScore').text('Score: ' + player.score);
+                    if(localStorage.getItem('scoreRecord') == null){
+                        localStorage.setItem('scoreRecord', '0');
+                    }
+                    $('#scoreRecord').text('Record: ' + localStorage.getItem('scoreRecord'));
                     $('#winner').fadeIn();
                 }
             }
