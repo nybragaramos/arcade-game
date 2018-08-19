@@ -5,7 +5,7 @@ In this game you have a Player, Enemies (Bugs) and Collectible items(Gems,Star,H
 
 * The player can move left, right, up and down with the arrow keys. 
 * The player begin the game with 3 lifes and 0 score points. 
-* The player can earn lives and score points with the collectible items. 
+* The player can earn lifes and score points with the collectible items. 
 
 		| Element       | Score Points  |
 		| ------------- |:-------------:|
@@ -18,7 +18,7 @@ In this game you have a Player, Enemies (Bugs) and Collectible items(Gems,Star,H
 
 * The enemies move in varying speeds on the paved block portion of the scene. 
 * Once the player collides with an enemy, the player returns to the starting position.
-		* If the player has score points it will lose them, if not it will lose one life. 
+* If the player has score points it will lose them, if not it will lose one life. 
 * If the player has no life and no points to lose it will lose the game. 
 * If the play reaches the water it won. 
 
