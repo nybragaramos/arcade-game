@@ -1,4 +1,4 @@
-[frontend-nanodegree-arcade-game](https://github.com/udacity/frontend-nanodegree-arcade-game)
+[Udacity Frontend Nanodegree Arcade Game](https://github.com/udacity/frontend-nanodegree-arcade-game)
 ===============================
 
 In this game you have a Player, Enemies (Bugs) and Collectible items(Gems,Star,Heart). The goal of the player is to reach the water collecting as many Collectible items as possible. 
