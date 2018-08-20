@@ -94,13 +94,13 @@ class Player extends Element{
   }
 
   updateLevel(){
-    if(this.score >= 50 && this.score < 100){
+    if(this.score >= 100 && this.score < 200){
       this.level = 1;
     }
-    if(this.score >= 100 && this.score < 150){
+    if(this.score >= 200 && this.score < 300){
       this.level = 2;
     }
-    if(this.score >= 200 && this.score < 250){
+    if(this.score >= 300 && this.score < 400){
       this.level = 3;
     }
     if(this.score >= 300){
@@ -220,7 +220,6 @@ let addBigBonusInterval = setInterval(addBigBonus, 7000);
 let levelValidator = {
   set : function(player, prop, value){
     if(prop === 'level'){
-      console.log('levelValidator: ' + value);
       clearInterval(addEnemiesInterval);
       addEnemiesInterval = setInterval(addEnemies, levels[value][2]);
     }
