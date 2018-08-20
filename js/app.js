@@ -49,6 +49,7 @@ class Player extends Element{
     this.lives = 3;
     this.hasLost = false;
     this.hasWin = false;
+    this.level = 0;
   }
 
   handleInput(value){
@@ -92,6 +93,21 @@ class Player extends Element{
     }
   }
 
+  updateLevel(){
+    if(this.score >= 50 && this.score < 100){
+      this.level = 1;
+    }
+    if(this.score >= 100 && this.score < 150){
+      this.level = 2;
+    }
+    if(this.score >= 200 && this.score < 250){
+      this.level = 3;
+    }
+    if(this.score >= 300){
+      this.level = 4;
+    }
+  }
+
   render(){
     super.render();
 
@@ -118,6 +134,7 @@ class Player extends Element{
     this.y = 465;
     if(this.score > 0 ){
       this.score = 0;
+      this.level = 0;
     }else if(this.lives > 0){
       this.lives--;
     }else {
@@ -134,6 +151,7 @@ class Player extends Element{
     this.lives = 3;
     this.hasLost = false;
     this.hasWin = false;
+    this.level = 0;
   }
 }
 
@@ -152,6 +170,7 @@ class Bonus extends Element{
         this.status = 0;
         if(this.bonus > 0){
           this.player.score += this.bonus;
+          this.player.updateLevel();
         }else {
           //the bonus == 0 its the heart that give a life
           this.player.lives ++;
@@ -175,18 +194,47 @@ class Bonus extends Element{
   }
 }
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
+
+//create the enemies and bonus set
 let allEnemies = new Set();
 let allBonus = new Set();
-let player = new Player(218, 465, 100, 84, 'images/char-boy.png');
+
+//Spawn constants
 const enemySpawnLineY = [140, 220, 300];
 const bonusSpawnLineX = [10,110,213,313, 413];
 const bonusSpawnLineY = [133, 215, 300];
 
+/* the player has a level from 0 to 4.
+ * each element from the array levels is a array with 3 with the characteristics of each level
+ * [speed range, minimum speed, time interval to add new enemies in ms]
+ */
+const levels = [[100, 30, 1500], [150, 60, 1200], [200, 90, 1000], [250, 120, 750], [300, 150, 500]];
+
+//set time to add new enemies and bonus
+let addEnemiesInterval = setInterval(addEnemies, 1500);
+//bonus with small value are add often to the game has the bonus with big values
+let addSmallBonusInterval = setInterval(addSmallBonus, 3000);
+let addBigBonusInterval = setInterval(addBigBonus, 7000);
+
+//the level validator update the addEnemiesInterval when the player change his level
+let levelValidator = {
+  set : function(player, prop, value){
+    if(prop === 'level'){
+      console.log('levelValidator: ' + value);
+      clearInterval(addEnemiesInterval);
+      addEnemiesInterval = setInterval(addEnemies, levels[value][2]);
+    }
+
+    player[prop] = value;
+    return true;
+  }
+
+};
+
+let player = new Proxy (new Player(218, 465, 100, 84, 'images/char-boy.png'), levelValidator);
+
+//create 4 initial enemies so the screen will not begin empty
 for(i = 0; i < 4; i++){
-  // add the new object to the objects[] array
   allEnemies.add(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
 }
 
@@ -207,14 +255,9 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-
-//set time to add new enemies and bonus
-let addEnemisInterval = setInterval(addEnemies, 1500);
-let addSmallBonusInterval = setInterval(addSmallBonus, 3000);
-let addBigBonusInterval = setInterval(addBigBonus, 7000);
-
+//add elements to the screen
 function addEnemies() {
-  allEnemies.add(new Enemy(-100, enemySpawnLineY[Math.floor(Math.random()*3)], Math.random()*100+30, player, 'images/enemy-bug.png'));
+  allEnemies.add(new Enemy(-100, enemySpawnLineY[Math.floor(Math.random()*3)], Math.random()*levels[player.level][0]+levels[player.level][1], player, 'images/enemy-bug.png'));
 }
 
 function addSmallBonus(){
@@ -224,8 +267,10 @@ function addSmallBonus(){
       break;
     case(1):
       allBonus.add(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-green.png', 10, player));
+      break;
     case(2):
       allBonus.add(new Bonus(bonusSpawnLineX[Math.floor(Math.random()*4)], bonusSpawnLineY[Math.floor(Math.random()*3)], 'images/gem-orange.png', 15, player));
+      break;
   }  
 }
 
@@ -251,7 +296,6 @@ function playAgain() {
   allEnemies.add(new Enemy(Math.random()*420, enemySpawnLineY[Math.floor(Math.random()*4)], Math.random()*100+30, player, 'images/enemy-bug.png'));
   }
 
-  addEnemisInterval = setInterval(addEnemies, 1500);
   addSmallBonusInterval = setInterval(addSmallBonus, 3000);
   addBigBonusInterval = setInterval(addBigBonus, 7000);
 }
