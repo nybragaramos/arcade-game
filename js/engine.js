@@ -68,7 +68,7 @@ var Engine = (function(global) {
             $('myCanvas').attr("style", 'z-index: -1;');
 
             //clear the timers that add new elements to the screen
-            clearInterval(addEnemisInterval);
+            clearInterval(addEnemiesInterval);
             clearInterval(addSmallBonusInterval);
             clearInterval(addBigBonusInterval);
 

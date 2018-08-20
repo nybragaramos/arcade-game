@@ -103,7 +103,7 @@ class Player extends Element{
     if(this.score >= 300 && this.score < 400){
       this.level = 3;
     }
-    if(this.score >= 300){
+    if(this.score >= 400){
       this.level = 4;
     }
   }
@@ -113,16 +113,25 @@ class Player extends Element{
 
     //draw score
     ctx.beginPath();
-    ctx.font = "16px Arial";
+    ctx.font = "16pt Arial";
     ctx.fillStyle = "#0095DD";
     ctx.fillText("Score: "+ this.score, 8, 20);
     ctx.closePath();
+
     //draw lives
     ctx.beginPath();
-    ctx.font = "16px Arial";
+    ctx.font = "16pt Arial";
     ctx.fillStyle = "#0095DD";
-    ctx.fillText("Lives: " + this.lives, 440, 20);
+    ctx.fillText("Lives: " + this.lives, 420, 20);
     ctx.closePath();
+
+    //draw level
+    ctx.beginPath();
+    ctx.font = "16pt Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Level: " + (this.level+1), 220, 20);
+    ctx.closePath();
+
   }
 
   /* Return the Player to original position after a colision
@@ -208,7 +217,7 @@ const bonusSpawnLineY = [133, 215, 300];
  * each element from the array levels is a array with 3 with the characteristics of each level
  * [speed range, minimum speed, time interval to add new enemies in ms]
  */
-const levels = [[100, 30, 1500], [150, 60, 1200], [200, 90, 1000], [250, 120, 750], [300, 150, 500]];
+const levels = [[100, 30, 1500], [150, 60, 1100], [200, 90, 900], [250, 120, 750], [300, 150, 500]];
 
 //set time to add new enemies and bonus
 let addEnemiesInterval = setInterval(addEnemies, 1500);
