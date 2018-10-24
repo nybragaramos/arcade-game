@@ -24,15 +24,15 @@ In this game you have a Player, Enemies (Bugs) and Collectible items(Gems,Star,H
 
 ## Usage
 
-	1. Clone project and open the index.html at your browser
+1. Clone project and open the index.html at your browser
 
 		```
 		$ git clone https://github.com/nybragaramos/arcade-game.git
 		```
 
-	2. Online Version
+2. Online Version
 
-		<https://nybragaramos.github.io/arcade-game/>
+[Arcade Game](https://nybragaramos.github.io/arcade-game/)
 
 ## Built With
 
