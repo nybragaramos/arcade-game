@@ -32,7 +32,7 @@ In this game you have a Player, Enemies (Bugs) and Collectible items(Gems,Star,H
 
 2. Online Version
 
-[Arcade Game](https://nybragaramos.github.io/arcade-game/)
+	[Arcade Game](https://nybragaramos.github.io/arcade-game/)
 
 ## Built With
 
